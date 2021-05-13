@@ -1,7 +1,18 @@
 import React from 'react'
-import ReactDOM, { render } from 'react-dom'
+import ReactDOM from 'react-dom'
+
 import './index.css'
+
 import useScript from './hooks/useScript.js'
+
+import PadBank from './components/padBank'
+
+import VolumeSlider from './components/controller/volumeSlider'
+import PowerButton from './components/controller/powerButton'
+import PadBankButton from './components/controller/padBankButton'
+import Display from './components/controller/display'
+
+
 
 const ScriptComponent = () => {
     useScript("https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js");
@@ -122,122 +133,7 @@ const bankOne = [
     }
   ];
 
-class Drum extends React.Component {
-    constructor(props){
-        super(props);
-        this.playSound = this.playSound.bind(this);
-        this.handleKeyPress = this.handleKeyPress.bind(this);
-    }
 
-    componentDidMount(){
-        document.addEventListener('keydown', this.handleKeyPress)
-    }
-
-    componentWillUnmount(){
-        document.removeEventListener('keydown', this.handleKeyPress)
-    }
-
-    handleKeyPress(e){
-        if (e.keyCode == this.props.keyCode){
-            this.playSound()
-        }
-    }
-
-    playSound(){
-        const sound = document.getElementById(this.props.keyTrigger);
-        sound.volume = this.props.volume/100
-        sound.play();
-        this.props.updateDisplay(this.props.id);
-    }
-    
-    render(){
-        return (
-            <div className ="drum-pad" id = {this.props.id} onClick = {this.playSound}>
-                <audio className = "clip" id = {this.props.keyTrigger} src={this.props.url}/>
-                {this.props.keyTrigger}</div>
-        )
-    }
-}
-
-
-class PadBank extends React.Component{
-    constructor(props){
-        super(props);
-    }
-    render(){
-        let padBank;
-
-        if (this.props.power){
-            padBank = this.props.name.map((drum) => {
-                return <Drum 
-                volume = {this.props.volume}
-                updateDisplay = {this.props.updateDisplay} 
-                id = {drum.id} 
-                url = {drum.url} 
-                keyTrigger = {drum.keyTrigger} 
-                keyCode = {drum.keyCode} 
-                power = {this.props.power}/>
-            })
-        } else {
-            padBank = this.props.name.map((drum)=> {
-                return <Drum 
-                volume = {this.props.volume}
-                updateDisplay = {this.props.updateDisplay} 
-                id = {drum.id} url ='#' 
-                keyTrigger = {drum.keyTrigger} 
-                keyCode = {drum.keyCode}
-                power = {this.props.power}/>
-            })
-
-       }
-
-        return(
-            <div id = "padBank">
-                {padBank}
-            </div>
-        )
-    }
-}
-
-class PowerButton extends React.Component{
-    constructor(props){
-        super(props);
-    }
-
-    render(){
-        return <div>
-            <button onClick = {this.props.changePower}> {this.props.power? "Power On" : "Power Off"}</button>
-        </div>
-    }
-}
-
-class PadBankButton extends React.Component{
-    constructor(props){
-        super(props);
-    };
-    render(){
-        return (<button onClick = {this.props.changePadBank}>{this.props.currentPadBank === bankOne? "Bank One": "Bank Two"}</button>)
-    }
-}
-
-class Display extends React.Component {
-    constructor(props){
-        super(props);
-    };
-    render(){
-        return (<p id = "display">{this.props.text}</p>)
-    }
-}
-
-class VolumeSlider extends React.Component {
-    constructor(props){
-        super(props);
-    };
-    render(){
-        return <input type = "range" min = "1" max = "100" value = {this.props.volume}
-        onInput = {e => this.props.updateVolume(e.target.value)}></input>
-    }
-}
 
 class App extends React.Component{
     constructor(props){
@@ -262,7 +158,7 @@ class App extends React.Component{
             display: !this.state.power? "Power On": "Power Off"}
         )
         if (this.state.power){
-            setTimeout(this.clearDisplay, 2000)
+            setTimeout(this.clearDisplay, 1000)
         }
     }
 
@@ -273,16 +169,18 @@ class App extends React.Component{
     }
 
     updateDisplay(name){
-        this.setState(
-            {display: name}
-        )
+        if (this.state.power){
+            this.setState(
+                {display: name}
+            )
+        }
     }
 
     updateVolume(val){
         this.setState(
-            {volume: val,
-            display: "Volume: " + val}
+            {volume: val}
         )
+        this.updateDisplay("Volume: " + val)
     }
 
     changePadBank(){
@@ -291,14 +189,14 @@ class App extends React.Component{
                 this.setState({
                     currentPadBank: bankTwo,
                     padBankName: "Bank Two",
-                    display: this.state.power? "Bank Two": ""
                 })
+                this.updateDisplay("Bank Two")
             } else {
                 this.setState({
                     currentPadBank: bankOne,
                     padBankName: "Bank One",
-                    display: this.state.power? "Bank One" : ""
                 })
+                this.updateDisplay("Bank One")
             }
     }
 
@@ -316,7 +214,7 @@ class App extends React.Component{
                 power = {this.state.power}/>
 
                 <PadBankButton changePadBank = {this.changePadBank} 
-                currentPadBank = {this.state.currentPadBank}/>
+                currentPadBank = {this.state.padBankName}/>
 
                 <Display text = {this.state.display}/>
 
