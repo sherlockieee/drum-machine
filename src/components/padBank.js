@@ -10,7 +10,7 @@ class PadBank extends React.Component{
 
         if (this.props.power){
             padBank = this.props.name.map((drum) => {
-                return <Drum 
+                return <Drum type = "drum-pad active"
                 volume = {this.props.volume}
                 updateDisplay = {this.props.updateDisplay} 
                 id = {drum.id} 
@@ -21,7 +21,7 @@ class PadBank extends React.Component{
             })
         } else {
             padBank = this.props.name.map((drum)=> {
-                return <Drum 
+                return <Drum type = "drum-pad disabled"
                 volume = {this.props.volume}
                 updateDisplay = {this.props.updateDisplay} 
                 id = {drum.id} url ='#' 

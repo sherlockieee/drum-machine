@@ -5,6 +5,6 @@ export default class Display extends React.Component {
         super(props);
     };
     render(){
-        return (<p id = "display">{this.props.text}</p>)
+        return (<div id = "display"><p>{this.props.text}</p></div>)
     }
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import './index.css'
+import './index.scss'
 
 import useScript from './hooks/useScript.js'
 
@@ -140,10 +140,10 @@ class App extends React.Component{
         super(props);
         this.state = {
             power: true,
-            display: "Hello",
+            display: "Hello!",
             currentPadBank: bankOne,
             padBankName: "Bank One",
-            volume: 50
+            volume: 50,
         }
         this.changePower = this.changePower.bind(this)
         this.changePadBank = this.changePadBank.bind(this);
@@ -209,17 +209,24 @@ class App extends React.Component{
                 name = {this.state.currentPadBank} 
                 power = {this.state.power} 
                 updateDisplay = {this.updateDisplay}/>
+                <div id = "Controller">
 
-                <PowerButton changePower = {this.changePower} 
-                power = {this.state.power}/>
+                  <Display text = {this.state.display}/>
 
-                <PadBankButton changePadBank = {this.changePadBank} 
-                currentPadBank = {this.state.padBankName}/>
+                  <div className = "Buttons">
 
-                <Display text = {this.state.display}/>
+                    <PowerButton changePower = {this.changePower} 
+                    power = {this.state.power}/>
 
-                <VolumeSlider updateVolume = {this.updateVolume} 
-                volume = {this.state.volume}/>
+                    <PadBankButton changePadBank = {this.changePadBank} 
+                    currentPadBank = {this.state.padBankName}/>
+
+                  </div>
+                  
+                  <VolumeSlider updateVolume = {this.updateVolume} 
+                  volume = {this.state.volume}/>
+                </div>
+                
             </div>
 
         )
