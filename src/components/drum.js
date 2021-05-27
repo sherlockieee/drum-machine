@@ -1,38 +1,34 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 
-export default class Drum extends React.Component {
-    constructor(props){
-        super(props);
-        this.playSound = this.playSound.bind(this);
-        this.handleKeyPress = this.handleKeyPress.bind(this);
-    }
+function Drum (props) {
 
-    componentDidMount(){
-        document.addEventListener('keydown', this.handleKeyPress)
-    }
+    useEffect(() => {
+        document.addEventListener('keydown', handleKeyPress) 
 
-    componentWillUnmount(){
-        document.removeEventListener('keydown', this.handleKeyPress)
-    }
+        return () => {
+            document.removeEventListener('keydown', handleKeyPress)
+        }
+    }, [])
 
-    handleKeyPress(e){
-        if (e.keyCode == this.props.keyCode){
-            this.playSound()
+    const handleKeyPress = (e) => {
+        if (e.keyCode == props.keyCode){
+            playSound()
         }
     }
 
-    playSound(){
-        const sound = document.getElementById(this.props.keyTrigger);
-        sound.volume = this.props.volume/100
+    const playSound = () => {
+        const sound = document.getElementById(props.keyTrigger);
+        sound.volume = props.volume/100
         sound.play();
-        this.props.updateDisplay(this.props.id);
+        props.updateDisplay(props.id);
     }
-    
-    render(){
-        return (
-            <div className = {this.props.type} id = {this.props.id} onClick = {this.playSound}>
-                <audio className = "clip" id = {this.props.keyTrigger} src={this.props.url}/>
-                {this.props.keyTrigger}</div>
-        )
-    }
+
+    return (
+        <div className = {props.type} id = {props.id} onClick = {playSound}>
+            <audio className = "clip" id = {props.keyTrigger} src={props.url}/>
+            {props.keyTrigger}</div>
+    )
+
 }
+
+export default Drum;

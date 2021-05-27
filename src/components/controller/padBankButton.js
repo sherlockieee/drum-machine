@@ -1,11 +1,8 @@
 import React from 'react'
 
-export default class PadBankButton extends React.Component{
-    constructor(props){
-        super(props);
-    };
-    render(){
-        return (<button onClick = {this.props.changePadBank}>
-            {this.props.currentPadBank === "Bank One"? "Bank One": "Bank Two"}</button>)
-    }
+export default function PadBankButton(props) {
+    return (<button onClick = {props.changePadBank}>
+        {props.currentPadBank === "Bank One"? "Bank One": "Bank Two"}
+        </button>)
 }
+

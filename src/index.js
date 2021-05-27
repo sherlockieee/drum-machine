@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import ReactDOM from 'react-dom'
 
 import './index.scss'
@@ -134,103 +134,82 @@ const bankOne = [
   ];
 
 
+function App () {
+  const [power, setPower] = useState(true);
+  const [display, setDisplay] = useState('Hello!');
+  const [volume, setVolume] = useState(50);
+  const [currentPadBank, setPadBank] = useState(bankOne)
+  const [padBankName, setPadBankName] = useState("Bank One")
 
-class App extends React.Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            power: true,
-            display: "Hello!",
-            currentPadBank: bankOne,
-            padBankName: "Bank One",
-            volume: 50,
-        }
-        this.changePower = this.changePower.bind(this)
-        this.changePadBank = this.changePadBank.bind(this);
-        this.clearDisplay = this.clearDisplay.bind(this);
-        this.updateDisplay = this.updateDisplay.bind(this);
-        this.updateVolume = this.updateVolume.bind(this);
+  const changePower = () => {
+    setPower(prevPower => !prevPower)
+    setDisplay(!power? "Power On": "Power Off")
+    if (power){
+        setTimeout(clearDisplay, 1000)
     }
+  }
 
-    changePower(){
-        this.setState(
-            {power: !this.state.power,
-            display: !this.state.power? "Power On": "Power Off"}
-        )
-        if (this.state.power){
-            setTimeout(this.clearDisplay, 1000)
-        }
-    }
+  const clearDisplay = () => {
+      setDisplay("")
+  };
 
-    clearDisplay(){
-        this.setState(
-            {display: ""}
-        )
-    }
+  const updateDisplay = (name) => {
+      if (power){
+          setDisplay(name);
+      }
+  };
 
-    updateDisplay(name){
-        if (this.state.power){
-            this.setState(
-                {display: name}
-            )
-        }
-    }
+  const updateVolume = (val) => {
+      setVolume(val);
+      updateDisplay("Volume: " + val);
+  };
 
-    updateVolume(val){
-        this.setState(
-            {volume: val}
-        )
-        this.updateDisplay("Volume: " + val)
-    }
+  const changePadBank = () => {
+          if (currentPadBank === bankOne){
+            setPadBank(bankTwo);
+            setPadBankName("Bank Two");
+            updateDisplay("Bank Two");
+          } else {
+              setPadBank(bankOne);
+              setPadBankName("Bank One");
+              updateDisplay("Bank One");
+          }
+  };
 
-    changePadBank(){
-        
-            if (this.state.currentPadBank === bankOne){
-                this.setState({
-                    currentPadBank: bankTwo,
-                    padBankName: "Bank Two",
-                })
-                this.updateDisplay("Bank Two")
-            } else {
-                this.setState({
-                    currentPadBank: bankOne,
-                    padBankName: "Bank One",
-                })
-                this.updateDisplay("Bank One")
-            }
-    }
-
-    
-    render(){
-        return (
-            <div className = "App" id = "drum-machine">
+  return (
+    <div>
+      <ScriptComponent/>
+      <div className = "App" id = "drum-machine">
                 <ScriptComponent/>
-                <PadBank volume = {this.state.volume} 
-                name = {this.state.currentPadBank} 
-                power = {this.state.power} 
-                updateDisplay = {this.updateDisplay}/>
+                <PadBank volume = {volume} 
+                name = {currentPadBank} 
+                power = {power} 
+                updateDisplay = {updateDisplay}/>
                 <div id = "Controller">
 
-                  <Display text = {this.state.display}/>
+                  <Display text = {display}/>
 
                   <div className = "Buttons">
 
-                    <PowerButton changePower = {this.changePower} 
-                    power = {this.state.power}/>
+                    <PowerButton changePower = {changePower} 
+                    power = {power}/>
 
-                    <PadBankButton changePadBank = {this.changePadBank} 
-                    currentPadBank = {this.state.padBankName}/>
+                    <PadBankButton changePadBank = {changePadBank} 
+                    currentPadBank = {padBankName}/>
 
                   </div>
                   
-                  <VolumeSlider updateVolume = {this.updateVolume} 
-                  volume = {this.state.volume}/>
+                  <VolumeSlider updateVolume = {updateVolume} 
+                  volume = {volume}/>
                 </div>
-                
             </div>
 
-        )
-    }
+    </div>
+  )
+
+
+
+
 }
 
 ReactDOM.render(<App />, document.getElementById('root'));
